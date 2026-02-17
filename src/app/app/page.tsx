@@ -96,6 +96,18 @@ const statFallback = [
   { label: "Trainer Utilization", value: "0%" },
 ];
 
+const moduleLinks = [
+  { href: "/app/scheduling", label: "Scheduling" },
+  { href: "/app/crm", label: "CRM" },
+  { href: "/app/payments", label: "Payments & POS" },
+  { href: "/app/marketing", label: "Marketing" },
+  { href: "/app/reporting", label: "Reporting" },
+  { href: "/app/staff", label: "Staff" },
+  { href: "/app/brand", label: "Brand" },
+  { href: "/app/advanced", label: "Advanced" },
+  { href: "/app/growth", label: "Growth" },
+];
+
 function formatCurrency(amount: number) {
   return new Intl.NumberFormat("en-IN", {
     style: "currency",
@@ -161,11 +173,11 @@ export default function DashboardPage() {
             session.access_token
           ),
           supabaseFetch<SessionInfo[]>(
-            "class_sessions?select=id,session_date,start_time,enrolled,class_id&order=session_date.desc&limit=6",
+            `class_sessions?select=id,session_date,start_time,enrolled,class_id&order=session_date.desc&limit=6&gym_id=eq.${profileRow.gym_id}`,
             session.access_token
           ),
           supabaseFetch<Payment[]>(
-            "payments?select=id,amount,status,paid_on,method,member_id&order=paid_on.desc&limit=5",
+            `payments?select=id,amount,status,paid_on,method,member_id&order=paid_on.desc&limit=5&gym_id=eq.${profileRow.gym_id}`,
             session.access_token
           ),
           supabaseFetch<Staff[]>(
@@ -460,6 +472,26 @@ export default function DashboardPage() {
               <p className="text-xs text-slate-500">Updated today</p>
             </div>
           ))}
+        </section>
+
+        <section className="glass rounded-3xl p-6">
+          <div className="flex items-center justify-between">
+            <h2 className="text-2xl text-slate-100">Modules</h2>
+            <span className="text-xs uppercase tracking-[0.3em] text-slate-500">
+              Full suite
+            </span>
+          </div>
+          <div className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            {moduleLinks.map((module) => (
+              <Link
+                key={module.href}
+                href={module.href}
+                className="rounded-2xl border border-slate-800/70 bg-slate-950/50 px-4 py-4 text-sm font-semibold text-slate-100 transition hover:border-amber-400/60 hover:text-amber-200"
+              >
+                {module.label}
+              </Link>
+            ))}
+          </div>
         </section>
 
         <section className="grid gap-6 lg:grid-cols-[1.2fr_0.8fr]">

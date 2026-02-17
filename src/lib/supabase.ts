@@ -126,6 +126,72 @@ export async function supabaseInsert<T>(
   return (await response.json()) as T;
 }
 
+export async function supabaseCount(
+  path: string,
+  accessToken: string
+): Promise<number> {
+  const response = await fetch(`${supabaseUrl}/rest/v1/${path}`, {
+    method: "HEAD",
+    headers: {
+      apikey: supabaseAnonKey,
+      Authorization: `Bearer ${accessToken}`,
+      Prefer: "count=exact",
+    },
+  });
+
+  if (!response.ok) {
+    const text = await response.text();
+    throw new Error(text || "Supabase count failed");
+  }
+
+  const range = response.headers.get("content-range");
+  if (!range) return 0;
+  const total = range.split("/")[1];
+  return total ? Number(total) : 0;
+}
+
+export async function supabaseUpdate<T>(
+  path: string,
+  accessToken: string,
+  body: unknown
+): Promise<T> {
+  const response = await fetch(`${supabaseUrl}/rest/v1/${path}`, {
+    method: "PATCH",
+    headers: {
+      apikey: supabaseAnonKey,
+      Authorization: `Bearer ${accessToken}`,
+      "Content-Type": "application/json",
+      Prefer: "return=representation",
+    },
+    body: JSON.stringify(body),
+  });
+
+  if (!response.ok) {
+    const text = await response.text();
+    throw new Error(text || "Supabase update failed");
+  }
+
+  return (await response.json()) as T;
+}
+
+export async function supabaseDelete(
+  path: string,
+  accessToken: string
+): Promise<void> {
+  const response = await fetch(`${supabaseUrl}/rest/v1/${path}`, {
+    method: "DELETE",
+    headers: {
+      apikey: supabaseAnonKey,
+      Authorization: `Bearer ${accessToken}`,
+    },
+  });
+
+  if (!response.ok) {
+    const text = await response.text();
+    throw new Error(text || "Supabase delete failed");
+  }
+}
+
 export async function createGymWorkspace(
   accessToken: string,
   userId: string,

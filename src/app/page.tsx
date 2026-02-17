@@ -35,8 +35,10 @@ const metrics = [
 
 export default function Home() {
   const [isAuthed, setIsAuthed] = useState(false);
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
+    setMounted(true);
     setIsAuthed(Boolean(getSession()?.access_token));
   }, []);
 
@@ -58,7 +60,7 @@ export default function Home() {
           </div>
         </div>
         <div className="flex items-center gap-4">
-          {isAuthed ? (
+          {(mounted && isAuthed) ? (
             <>
               <Link
                 href="/app"
@@ -111,7 +113,7 @@ export default function Home() {
               modern Indian gyms.
             </p>
             <div className="flex flex-wrap items-center gap-4">
-              {isAuthed ? (
+              {(mounted && isAuthed) ? (
                 <Link
                   href="/app"
                   className="rounded-full bg-amber-400 px-6 py-3 text-sm font-semibold text-slate-900 shadow-lg shadow-amber-500/30 transition hover:translate-y-[-1px]"

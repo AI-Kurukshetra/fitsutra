@@ -32,10 +32,17 @@ SEED_OWNER_ID=optional_auth_user_id
    - Script: `npm run seed`
 4. Sign up in the app to create a gym workspace and profile (owner role).
 5. In Supabase Realtime, enable replication for:
-   `gyms`, `profiles`, `members`, `staff`, `classes`, `class_sessions`, `payments`.
+   `gyms`, `profiles`, `locations`, `members`, `membership_plans`, `memberships`, `staff`, `staff_shifts`,
+   `payroll_entries`, `classes`, `class_sessions`, `appointments`, `bookings`, `waitlists`, `payments`,
+   `products`, `orders`, `order_items`, `campaigns`, `messages`, `promo_codes`, `loyalty_rewards`,
+   `referrals`, `reports`, `widgets`, `marketplace_listings`, `app_settings`, `integrations`, `forms`,
+   `waivers`, `waiver_signatures`, `leads`, `finance_offers`.
+6. Create a Storage bucket named `fitsutra-assets` (public) for brand assets uploads.
 
 ## Notes
 - The dashboard shows demo data until Supabase is configured.
 - Auth uses Supabase REST endpoints; realtime updates use `@supabase/supabase-js`.
 - Realtime subscriptions listen to core tables and refresh the UI instantly.
 - Analytics lives at `/app/analytics`.
+- Module pages live under `/app/*` (Scheduling, CRM, Payments, Marketing, Reporting, Staff, Brand, Advanced, Growth).
+- CRUD lists include search and quick filters.

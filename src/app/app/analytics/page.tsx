@@ -93,16 +93,16 @@ export default function AnalyticsPage() {
       }
 
       setUseDemo(false);
-      const [members, paymentsData] = await Promise.all([
-        supabaseFetch<Member[]>(
-          `members?select=id&gym_id=eq.${profileRow.gym_id}`,
-          session.access_token
-        ),
-        supabaseFetch<Payment[]>(
-          "payments?select=id,amount,paid_on",
-          session.access_token
-        ),
-      ]);
+        const [members, paymentsData] = await Promise.all([
+          supabaseFetch<Member[]>(
+            `members?select=id&gym_id=eq.${profileRow.gym_id}`,
+            session.access_token
+          ),
+          supabaseFetch<Payment[]>(
+            `payments?select=id,amount,paid_on&gym_id=eq.${profileRow.gym_id}`,
+            session.access_token
+          ),
+        ]);
 
       const revenue = paymentsData.reduce(
         (sum, payment) => sum + (payment.amount || 0),
