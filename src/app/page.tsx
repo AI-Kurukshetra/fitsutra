@@ -121,12 +121,12 @@ export default function Home() {
                   Go to dashboard
                 </Link>
               ) : (
-                <Link
-                  href="/signup"
-                  className="rounded-full bg-amber-400 px-6 py-3 text-sm font-semibold text-slate-900 shadow-lg shadow-amber-500/30 transition hover:translate-y-[-1px]"
-                >
-                  Launch your demo
-                </Link>
+          <Link
+            href="/book-demo"
+            className="rounded-full bg-amber-400 px-6 py-3 text-sm font-semibold text-slate-900 shadow-lg shadow-amber-500/30 transition hover:translate-y-[-1px]"
+          >
+            Book a demo
+          </Link>
               )}
               <Link
                 href="/app"
@@ -251,7 +251,7 @@ export default function Home() {
             </p>
           </div>
           <Link
-            href="/signup"
+            href="/book-demo"
             className="rounded-full bg-amber-400 px-6 py-3 text-sm font-semibold text-slate-900 shadow-lg shadow-amber-500/30"
           >
             Book a demo

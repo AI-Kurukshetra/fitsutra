@@ -22,6 +22,9 @@ NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
 SUPABASE_SERVICE_ROLE_KEY=your_service_role_key
 SEED_OWNER_ID=optional_auth_user_id
+DEFAULT_GYM_ID=optional_gym_id_for_public_leads
+BOOKING_ADMIN_EMAIL=admin@example.com
+RESEND_API_KEY=optional_resend_key
 ```
 
 ## Supabase Setup
@@ -46,3 +49,4 @@ SEED_OWNER_ID=optional_auth_user_id
 - Analytics lives at `/app/analytics`.
 - Module pages live under `/app/*` (Scheduling, CRM, Payments, Marketing, Reporting, Staff, Brand, Advanced, Growth).
 - CRUD lists include search and quick filters.
+- Book a demo page lives at `/book-demo` and sends requests to `leads`.

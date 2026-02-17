@@ -69,6 +69,7 @@ async function run() {
     {
       id: "22222222-2222-2222-2222-222222222221",
       gym_id: "11111111-1111-1111-1111-111111111111",
+      member_code: "ABC1234",
       full_name: "Aarav Kapoor",
       email: "aarav@fitsutra.in",
       phone: "+91 90000 11111",
@@ -79,6 +80,7 @@ async function run() {
     {
       id: "22222222-2222-2222-2222-222222222222",
       gym_id: "11111111-1111-1111-1111-111111111111",
+      member_code: "FS-9281",
       full_name: "Ishita Verma",
       email: "ishita@fitsutra.in",
       phone: "+91 90000 22222",
@@ -89,6 +91,7 @@ async function run() {
     {
       id: "22222222-2222-2222-2222-222222222223",
       gym_id: "11111111-1111-1111-1111-111111111111",
+      member_code: "FS-7723",
       full_name: "Kabir Malhotra",
       email: "kabir@fitsutra.in",
       phone: "+91 90000 33333",
@@ -99,6 +102,7 @@ async function run() {
     {
       id: "22222222-2222-2222-2222-222222222224",
       gym_id: "11111111-1111-1111-1111-111111111111",
+      member_code: "FS-5571",
       full_name: "Meera Iyer",
       email: "meera@fitsutra.in",
       phone: "+91 90000 44444",

@@ -25,6 +25,7 @@ import {
 
 type Member = {
   id: string;
+  member_code: string | null;
   full_name: string;
   email: string | null;
   status: string;
@@ -164,10 +165,10 @@ export default function DashboardPage() {
       setUseDemo(false);
       const [membersData, classesData, sessionsData, paymentsData, staffData] =
         await Promise.all([
-          supabaseFetch<Member[]>(
-            `members?select=id,full_name,email,status,membership_type,joined_on&order=joined_on.desc&limit=6&gym_id=eq.${profileRow.gym_id}`,
-            session.access_token
-          ),
+            supabaseFetch<Member[]>(
+              `members?select=id,member_code,full_name,email,status,membership_type,joined_on&order=joined_on.desc&limit=6&gym_id=eq.${profileRow.gym_id}`,
+              session.access_token
+            ),
           supabaseFetch<ClassInfo[]>(
             `classes?select=id,title,coach,intensity,capacity&order=created_at.desc&limit=4&gym_id=eq.${profileRow.gym_id}`,
             session.access_token
@@ -518,7 +519,9 @@ export default function DashboardPage() {
                     <p className="text-sm font-semibold text-slate-100">
                       {member.full_name}
                     </p>
-                    <p className="text-xs text-slate-500">{member.email}</p>
+                    <p className="text-xs text-slate-500">
+                      {member.member_code ? `ID ${member.member_code}` : member.email}
+                    </p>
                   </div>
                   <div className="text-right">
                     <p className="text-xs text-slate-400">

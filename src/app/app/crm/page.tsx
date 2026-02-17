@@ -64,6 +64,7 @@ export default function CrmPage() {
         session={session}
         gymId={gymId}
         fields={[
+          { name: "member_code", label: "Member Code" },
           { name: "full_name", label: "Full Name", required: true },
           { name: "email", label: "Email" },
           { name: "phone", label: "Phone" },

@@ -66,6 +66,7 @@ create table if not exists public.locations (
 create table if not exists public.members (
   id uuid primary key default gen_random_uuid(),
   gym_id uuid references public.gyms(id) on delete cascade,
+  member_code text,
   full_name text not null,
   email text,
   phone text,
@@ -360,6 +361,26 @@ create table if not exists public.finance_offers (
   status text default 'offered',
   created_at timestamptz default now()
 );
+
+do $$
+declare t text;
+begin
+  foreach t in array array[
+    'class_sessions','appointments','bookings','waitlists','payments',
+    'orders','order_items','messages','waiver_signatures'
+  ]
+  loop
+    if to_regclass('public.' || t) is not null then
+      execute format(
+        'alter table public.%I add column if not exists gym_id uuid references public.gyms(id) on delete cascade',
+        t
+      );
+    end if;
+  end loop;
+end $$;
+
+alter table public.members
+  add column if not exists member_code text;
 
 alter table public.gyms enable row level security;
 alter table public.profiles enable row level security;
