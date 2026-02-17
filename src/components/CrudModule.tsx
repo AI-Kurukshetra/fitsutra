@@ -56,6 +56,13 @@ function coerceValue(type: FieldType | undefined, value: string) {
   return value;
 }
 
+const defaultUpiId = "fitsutra@upi";
+
+function buildUpiPayload(upiId: string) {
+  const cleaned = upiId.trim() || defaultUpiId;
+  return `upi://pay?pa=${encodeURIComponent(cleaned)}&pn=FitSutra&cu=INR`;
+}
+
 export default function CrudModule({
   title,
   description,
@@ -93,6 +100,12 @@ export default function CrudModule({
     });
     setForm(initial);
   }, [fields]);
+
+  useEffect(() => {
+    if (form.payment_method !== "upi") return;
+    if (form.upi_id) return;
+    setForm((prev) => ({ ...prev, upi_id: defaultUpiId }));
+  }, [form.payment_method, form.upi_id]);
 
   const loadRows = useCallback(async () => {
     if (!session?.access_token || !gymId) return;
@@ -328,6 +341,36 @@ export default function CrudModule({
                       </option>
                     ))}
                   </select>
+                ) : field.name === "upi_id" ? (
+                  form.payment_method === "upi" && (
+                    <div>
+                      <input
+                        type="text"
+                        value={form[field.name] ?? ""}
+                        onChange={(event) =>
+                          setForm((prev) => ({
+                            ...prev,
+                            [field.name]: event.target.value,
+                          }))
+                        }
+                        placeholder={defaultUpiId}
+                        className="mt-2 w-full rounded-2xl border border-slate-700/60 bg-slate-950/60 px-4 py-3 text-sm text-slate-100 outline-none focus:border-amber-400/70"
+                        required={field.required}
+                      />
+                      <div className="mt-3 rounded-2xl border border-slate-800/70 bg-slate-950/50 p-3 text-center">
+                        <p className="text-[10px] uppercase tracking-[0.3em] text-slate-500">
+                          UPI QR ({form[field.name] || defaultUpiId})
+                        </p>
+                        <img
+                          src={`https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(
+                            buildUpiPayload(form[field.name])
+                          )}`}
+                          alt="UPI QR"
+                          className="mx-auto mt-2 h-36 w-36 rounded-xl border border-slate-800/70 bg-slate-900/60 object-contain"
+                        />
+                      </div>
+                    </div>
+                  )
                 ) : (
                   <input
                     type={field.type ?? "text"}
@@ -424,6 +467,36 @@ export default function CrudModule({
                           </option>
                         ))}
                       </select>
+                    ) : field.name === "upi_id" ? (
+                      form.payment_method === "upi" && (
+                        <div>
+                          <input
+                            type="text"
+                            value={form[field.name] ?? ""}
+                            onChange={(event) =>
+                              setForm((prev) => ({
+                                ...prev,
+                                [field.name]: event.target.value,
+                              }))
+                            }
+                            placeholder={defaultUpiId}
+                            className="mt-2 w-full rounded-2xl border border-slate-700/60 bg-slate-950/60 px-4 py-3 text-sm text-slate-100 outline-none focus:border-amber-400/70"
+                            required={field.required}
+                          />
+                          <div className="mt-3 rounded-2xl border border-slate-800/70 bg-slate-950/50 p-3 text-center">
+                            <p className="text-[10px] uppercase tracking-[0.3em] text-slate-500">
+                              UPI QR ({form[field.name] || defaultUpiId})
+                            </p>
+                            <img
+                              src={`https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(
+                                buildUpiPayload(form[field.name])
+                              )}`}
+                              alt="UPI QR"
+                              className="mx-auto mt-2 h-36 w-36 rounded-xl border border-slate-800/70 bg-slate-900/60 object-contain"
+                            />
+                          </div>
+                        </div>
+                      )
                     ) : (
                       <input
                         type={field.type ?? "text"}

@@ -93,6 +93,8 @@ create table if not exists public.memberships (
   gym_id uuid references public.gyms(id) on delete cascade,
   member_id uuid references public.members(id) on delete cascade,
   plan_id uuid references public.membership_plans(id) on delete set null,
+  payment_method text,
+  upi_id text,
   status text default 'active',
   start_date date,
   end_date date,

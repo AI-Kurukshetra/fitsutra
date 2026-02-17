@@ -132,6 +132,18 @@ export default function CrmPage() {
           { name: "member_id", label: "Member ID", required: true },
           { name: "plan_id", label: "Plan ID" },
           {
+            name: "payment_method",
+            label: "Payment Method",
+            type: "select",
+            options: [
+              { label: "UPI", value: "upi" },
+              { label: "Card", value: "card" },
+              { label: "Cash", value: "cash" },
+              { label: "Bank Transfer", value: "bank_transfer" },
+            ],
+          },
+          { name: "upi_id", label: "UPI ID" },
+          {
             name: "status",
             label: "Status",
             type: "select",

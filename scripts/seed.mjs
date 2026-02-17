@@ -139,6 +139,8 @@ async function run() {
       gym_id: "11111111-1111-1111-1111-111111111111",
       member_id: "22222222-2222-2222-2222-222222222221",
       plan_id: "22222222-2222-2222-2222-222222222231",
+      payment_method: "upi",
+      upi_id: "fitsutra@upi",
       status: "active",
       start_date: "2025-11-12",
     },

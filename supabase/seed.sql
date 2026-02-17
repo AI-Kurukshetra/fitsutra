@@ -46,13 +46,15 @@ on conflict (id) do update set
   tier = excluded.tier,
   status = excluded.status;
 
-insert into public.memberships (id, gym_id, member_id, plan_id, status, start_date)
+insert into public.memberships (id, gym_id, member_id, plan_id, payment_method, upi_id, status, start_date)
 values
-  ('22222222-2222-2222-2222-222222222241', '11111111-1111-1111-1111-111111111111', '22222222-2222-2222-2222-222222222221', '22222222-2222-2222-2222-222222222231', 'active', '2025-11-12')
+  ('22222222-2222-2222-2222-222222222241', '11111111-1111-1111-1111-111111111111', '22222222-2222-2222-2222-222222222221', '22222222-2222-2222-2222-222222222231', 'upi', 'fitsutra@upi', 'active', '2025-11-12')
 on conflict (id) do update set
   gym_id = excluded.gym_id,
   member_id = excluded.member_id,
   plan_id = excluded.plan_id,
+  payment_method = excluded.payment_method,
+  upi_id = excluded.upi_id,
   status = excluded.status,
   start_date = excluded.start_date;
 
