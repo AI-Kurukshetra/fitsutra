@@ -45,8 +45,6 @@ export default function MarketingPage() {
       <ContextNotice
         session={session}
         gymId={gymId}
-        useModal
-        modalColumns={2}
         loading={loading}
         error={error}
       />

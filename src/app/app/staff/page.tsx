@@ -48,8 +48,6 @@ export default function StaffPage() {
       <ContextNotice
         session={session}
         gymId={gymId}
-        useModal
-        modalColumns={2}
         loading={loading}
         error={error}
       />
