@@ -1,7 +1,12 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
-import { getSession, isSupabaseConfigured, supabaseFetch } from "@/lib/supabase";
+import { useEffect, useState } from "react";
+import {
+  getValidSession,
+  isSupabaseConfigured,
+  supabaseFetch,
+  type SupabaseSession,
+} from "@/lib/supabase";
 
 type Profile = {
   gym_id: string | null;
@@ -12,23 +17,25 @@ type Profile = {
 };
 
 export default function useGymContext() {
-  const session = useMemo(() => getSession(), []);
   const supabaseReady = isSupabaseConfigured();
+  const [session, setSession] = useState<SupabaseSession | null>(null);
   const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     async function loadProfile() {
-      if (!supabaseReady || !session?.access_token) {
+      const activeSession = await getValidSession();
+      setSession(activeSession);
+      if (!supabaseReady || !activeSession?.access_token) {
         setLoading(false);
         return;
       }
 
       try {
         const profileRows = await supabaseFetch<Profile[]>(
-          `profiles?select=gym_id,role,gym:gyms(name)&user_id=eq.${session.user.id}&limit=1`,
-          session.access_token
+          `profiles?select=gym_id,role,gym:gyms(name)&user_id=eq.${activeSession.user.id}&limit=1`,
+          activeSession.access_token
         );
         setProfile(profileRows[0] ?? null);
       } catch (err) {
@@ -39,7 +46,7 @@ export default function useGymContext() {
     }
 
     loadProfile();
-  }, [session?.access_token, session?.user?.id, supabaseReady]);
+  }, [supabaseReady]);
 
   return {
     session,

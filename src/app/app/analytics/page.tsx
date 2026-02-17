@@ -1,9 +1,14 @@
 "use client";
 
 import Link from "next/link";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import type { RealtimeChannel } from "@supabase/supabase-js";
-import { getSession, isSupabaseConfigured, supabaseFetch } from "@/lib/supabase";
+import {
+  getValidSession,
+  isSupabaseConfigured,
+  supabaseFetch,
+  type SupabaseSession,
+} from "@/lib/supabase";
 import {
   getSupabaseClient,
   hydrateRealtimeSession,
@@ -54,7 +59,7 @@ function Sparkline({ data, stroke }: { data: number[]; stroke: string }) {
 }
 
 export default function AnalyticsPage() {
-  const session = useMemo(() => getSession(), []);
+  const [session, setSession] = useState<SupabaseSession | null>(null);
   const supabaseReady = isSupabaseConfigured();
   const [useDemo, setUseDemo] = useState(false);
   const [profile, setProfile] = useState<Profile | null>(null);
@@ -70,6 +75,17 @@ export default function AnalyticsPage() {
     }>
   >([]);
   const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    let mounted = true;
+    (async () => {
+      const activeSession = await getValidSession();
+      if (mounted) setSession(activeSession);
+    })();
+    return () => {
+      mounted = false;
+    };
+  }, []);
 
   const loadAnalytics = useCallback(async () => {
     if (!supabaseReady || !session?.access_token) {

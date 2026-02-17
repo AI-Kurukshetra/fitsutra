@@ -1,14 +1,15 @@
 "use client";
 
 import Link from "next/link";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import type { RealtimeChannel } from "@supabase/supabase-js";
 import {
-  getSession,
+  getValidSession,
   isSupabaseConfigured,
   createGymWorkspace,
   signOut,
   supabaseFetch,
+  type SupabaseSession,
 } from "@/lib/supabase";
 import {
   getSupabaseClient,
@@ -134,8 +135,19 @@ export default function DashboardPage() {
   const [payments, setPayments] = useState<Payment[]>([]);
   const [staff, setStaff] = useState<Staff[]>([]);
 
-  const session = useMemo(() => getSession(), []);
+  const [session, setSession] = useState<SupabaseSession | null>(null);
   const supabaseReady = isSupabaseConfigured();
+
+  useEffect(() => {
+    let mounted = true;
+    (async () => {
+      const activeSession = await getValidSession();
+      if (mounted) setSession(activeSession);
+    })();
+    return () => {
+      mounted = false;
+    };
+  }, []);
 
   const loadData = useCallback(async () => {
     if (!supabaseReady || !session?.access_token) {

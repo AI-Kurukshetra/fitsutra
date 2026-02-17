@@ -33,6 +33,53 @@ export function setSession(session: SupabaseSession | null) {
   window.localStorage.setItem(storageKey, JSON.stringify(session));
 }
 
+export function isSessionExpired(session: SupabaseSession | null) {
+  if (!session) return true;
+  const now = Math.floor(Date.now() / 1000);
+  return session.expires_at <= now + 30;
+}
+
+export async function refreshSession(
+  refreshToken: string
+): Promise<SupabaseSession> {
+  const response = await fetch(
+    `${supabaseUrl}/auth/v1/token?grant_type=refresh_token`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        apikey: supabaseAnonKey,
+      },
+      body: JSON.stringify({ refresh_token: refreshToken }),
+    }
+  );
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error?.error_description ?? "Session refresh failed");
+  }
+
+  const session = (await response.json()) as SupabaseSession;
+  setSession(session);
+  return session;
+}
+
+export async function getValidSession(): Promise<SupabaseSession | null> {
+  const session = getSession();
+  if (!session) return null;
+  if (!isSessionExpired(session)) return session;
+  if (!session.refresh_token) {
+    setSession(null);
+    return null;
+  }
+  try {
+    return await refreshSession(session.refresh_token);
+  } catch {
+    setSession(null);
+    return null;
+  }
+}
+
 export async function signInWithPassword(email: string, password: string) {
   const response = await fetch(
     `${supabaseUrl}/auth/v1/token?grant_type=password`,
@@ -80,6 +127,41 @@ export async function signUp(email: string, password: string) {
 
 export async function signOut() {
   setSession(null);
+}
+
+export async function sendPasswordReset(email: string, redirectTo?: string) {
+  const response = await fetch(`${supabaseUrl}/auth/v1/recover`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      apikey: supabaseAnonKey,
+    },
+    body: JSON.stringify(
+      redirectTo ? { email, redirect_to: redirectTo } : { email }
+    ),
+  });
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error?.error_description ?? "Reset email failed");
+  }
+}
+
+export async function updatePassword(accessToken: string, password: string) {
+  const response = await fetch(`${supabaseUrl}/auth/v1/user`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      apikey: supabaseAnonKey,
+      Authorization: `Bearer ${accessToken}`,
+    },
+    body: JSON.stringify({ password }),
+  });
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error?.error_description ?? "Password update failed");
+  }
 }
 
 export async function supabaseFetch<T>(

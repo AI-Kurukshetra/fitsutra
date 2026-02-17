@@ -3,14 +3,21 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { isSupabaseConfigured, signInWithPassword } from "@/lib/supabase";
+import {
+  isSupabaseConfigured,
+  sendPasswordReset,
+  signInWithPassword,
+} from "@/lib/supabase";
 
 export default function LoginPage() {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [resetLoading, setResetLoading] = useState(false);
+  const [resetSent, setResetSent] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [resetError, setResetError] = useState<string | null>(null);
 
   async function handleSubmit(event: React.FormEvent) {
     event.preventDefault();
@@ -29,6 +36,32 @@ export default function LoginPage() {
       setError(err instanceof Error ? err.message : "Login failed");
     } finally {
       setLoading(false);
+    }
+  }
+
+  async function handleResetPassword() {
+    setResetError(null);
+    setResetSent(false);
+
+    if (!isSupabaseConfigured()) {
+      setResetError("Supabase is not configured yet. Add environment variables.");
+      return;
+    }
+
+    if (!email) {
+      setResetError("Enter your email first.");
+      return;
+    }
+
+    setResetLoading(true);
+    try {
+      const redirectTo = `${window.location.origin}/reset-password`;
+      await sendPasswordReset(email, redirectTo);
+      setResetSent(true);
+    } catch (err) {
+      setResetError(err instanceof Error ? err.message : "Reset failed");
+    } finally {
+      setResetLoading(false);
     }
   }
 
@@ -74,6 +107,28 @@ export default function LoginPage() {
                 required
               />
             </div>
+            <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-slate-400">
+              <span>Forgot your password?</span>
+              <button
+                type="button"
+                onClick={handleResetPassword}
+                disabled={resetLoading}
+                className="font-semibold text-amber-300 disabled:cursor-not-allowed disabled:opacity-60"
+              >
+                {resetLoading ? "Sending..." : "Send reset link"}
+              </button>
+            </div>
+
+            {resetError && (
+              <div className="rounded-2xl border border-red-400/40 bg-red-500/10 px-4 py-3 text-sm text-red-200">
+                {resetError}
+              </div>
+            )}
+            {resetSent && (
+              <div className="rounded-2xl border border-emerald-400/40 bg-emerald-500/10 px-4 py-3 text-sm text-emerald-100">
+                Password reset email sent. Check your inbox.
+              </div>
+            )}
 
             {error && (
               <div className="rounded-2xl border border-red-400/40 bg-red-500/10 px-4 py-3 text-sm text-red-200">
