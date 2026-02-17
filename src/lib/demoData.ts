@@ -8,6 +8,7 @@ export const demoStats = [
 export const demoMembers = [
   {
     id: "m1",
+    member_code: "FS-1024",
     full_name: "Aarav Kapoor",
     email: "aarav@fitsutra.in",
     status: "active",
@@ -16,6 +17,7 @@ export const demoMembers = [
   },
   {
     id: "m2",
+    member_code: "FS-2186",
     full_name: "Ishita Verma",
     email: "ishita@fitsutra.in",
     status: "active",
@@ -24,6 +26,7 @@ export const demoMembers = [
   },
   {
     id: "m3",
+    member_code: "FS-7742",
     full_name: "Kabir Malhotra",
     email: "kabir@fitsutra.in",
     status: "paused",
@@ -32,6 +35,7 @@ export const demoMembers = [
   },
   {
     id: "m4",
+    member_code: "FS-5531",
     full_name: "Meera Iyer",
     email: "meera@fitsutra.in",
     status: "active",
