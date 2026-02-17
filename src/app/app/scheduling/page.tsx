@@ -57,6 +57,8 @@ export default function SchedulingPage() {
         table="classes"
         session={session}
         gymId={gymId}
+        useModal
+        modalColumns={2}
         fields={[
           { name: "title", label: "Title", required: true },
           { name: "coach", label: "Coach" },
@@ -81,6 +83,8 @@ export default function SchedulingPage() {
         table="class_sessions"
         session={session}
         gymId={gymId}
+        useModal
+        modalColumns={2}
         fields={[
           { name: "class_id", label: "Class ID", required: true },
           { name: "session_date", label: "Date", type: "date" },
@@ -95,6 +99,8 @@ export default function SchedulingPage() {
         table="appointments"
         session={session}
         gymId={gymId}
+        useModal
+        modalColumns={2}
         fields={[
           { name: "member_id", label: "Member ID" },
           { name: "staff_id", label: "Staff ID" },
@@ -120,6 +126,8 @@ export default function SchedulingPage() {
         table="bookings"
         session={session}
         gymId={gymId}
+        useModal
+        modalColumns={2}
         fields={[
           { name: "member_id", label: "Member ID" },
           { name: "class_session_id", label: "Class Session ID" },
@@ -142,6 +150,8 @@ export default function SchedulingPage() {
         table="waitlists"
         session={session}
         gymId={gymId}
+        useModal
+        modalColumns={2}
         fields={[
           { name: "member_id", label: "Member ID" },
           { name: "class_session_id", label: "Class Session ID" },

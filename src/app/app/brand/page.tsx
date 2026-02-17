@@ -48,6 +48,8 @@ export default function BrandPage() {
       <ContextNotice
         session={session}
         gymId={gymId}
+        useModal
+        modalColumns={2}
         loading={loading}
         error={error}
       />
@@ -60,6 +62,8 @@ export default function BrandPage() {
         table="widgets"
         session={session}
         gymId={gymId}
+        useModal
+        modalColumns={2}
         fields={[
           { name: "name", label: "Widget Name", required: true },
           { name: "embed_code", label: "Embed Code", type: "textarea" },
@@ -81,6 +85,8 @@ export default function BrandPage() {
         table="marketplace_listings"
         session={session}
         gymId={gymId}
+        useModal
+        modalColumns={2}
         fields={[
           { name: "title", label: "Listing Title", required: true },
           {
@@ -102,6 +108,8 @@ export default function BrandPage() {
         table="app_settings"
         session={session}
         gymId={gymId}
+        useModal
+        modalColumns={2}
         fields={[
           { name: "theme", label: "Theme" },
           { name: "primary_color", label: "Primary Color" },

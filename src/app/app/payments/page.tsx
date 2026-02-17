@@ -45,6 +45,8 @@ export default function PaymentsPage() {
       <ContextNotice
         session={session}
         gymId={gymId}
+        useModal
+        modalColumns={2}
         loading={loading}
         error={error}
       />
@@ -57,6 +59,8 @@ export default function PaymentsPage() {
         table="payments"
         session={session}
         gymId={gymId}
+        useModal
+        modalColumns={2}
         fields={[
           { name: "member_id", label: "Member ID", required: true },
           { name: "amount", label: "Amount", type: "number" },
@@ -82,6 +86,8 @@ export default function PaymentsPage() {
         table="products"
         session={session}
         gymId={gymId}
+        useModal
+        modalColumns={2}
         fields={[
           { name: "name", label: "Product Name", required: true },
           { name: "sku", label: "SKU" },
@@ -105,6 +111,8 @@ export default function PaymentsPage() {
         table="orders"
         session={session}
         gymId={gymId}
+        useModal
+        modalColumns={2}
         fields={[
           { name: "member_id", label: "Member ID" },
           { name: "total", label: "Total", type: "number" },
@@ -127,6 +135,8 @@ export default function PaymentsPage() {
         table="order_items"
         session={session}
         gymId={gymId}
+        useModal
+        modalColumns={2}
         fields={[
           { name: "order_id", label: "Order ID", required: true },
           { name: "product_id", label: "Product ID" },

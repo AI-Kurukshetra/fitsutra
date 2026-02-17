@@ -45,6 +45,8 @@ export default function ReportingPage() {
       <ContextNotice
         session={session}
         gymId={gymId}
+        useModal
+        modalColumns={2}
         loading={loading}
         error={error}
       />
@@ -57,6 +59,8 @@ export default function ReportingPage() {
         table="reports"
         session={session}
         gymId={gymId}
+        useModal
+        modalColumns={2}
         fields={[
           { name: "name", label: "Report Name", required: true },
           { name: "report_type", label: "Type" },

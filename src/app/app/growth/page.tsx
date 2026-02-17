@@ -48,6 +48,8 @@ export default function GrowthPage() {
       <ContextNotice
         session={session}
         gymId={gymId}
+        useModal
+        modalColumns={2}
         loading={loading}
         error={error}
       />
@@ -60,6 +62,8 @@ export default function GrowthPage() {
         table="leads"
         session={session}
         gymId={gymId}
+        useModal
+        modalColumns={2}
         fields={[
           { name: "full_name", label: "Full Name", required: true },
           { name: "email", label: "Email" },
@@ -84,6 +88,8 @@ export default function GrowthPage() {
         table="finance_offers"
         session={session}
         gymId={gymId}
+        useModal
+        modalColumns={2}
         fields={[
           { name: "provider", label: "Provider", required: true },
           { name: "amount", label: "Amount", type: "number" },

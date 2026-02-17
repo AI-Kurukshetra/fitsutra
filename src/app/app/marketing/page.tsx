@@ -45,6 +45,8 @@ export default function MarketingPage() {
       <ContextNotice
         session={session}
         gymId={gymId}
+        useModal
+        modalColumns={2}
         loading={loading}
         error={error}
       />
@@ -57,6 +59,8 @@ export default function MarketingPage() {
         table="campaigns"
         session={session}
         gymId={gymId}
+        useModal
+        modalColumns={2}
         fields={[
           { name: "name", label: "Campaign Name", required: true },
           {
@@ -90,6 +94,8 @@ export default function MarketingPage() {
         table="messages"
         session={session}
         gymId={gymId}
+        useModal
+        modalColumns={2}
         fields={[
           { name: "campaign_id", label: "Campaign ID" },
           { name: "recipient", label: "Recipient" },
@@ -113,6 +119,8 @@ export default function MarketingPage() {
         table="promo_codes"
         session={session}
         gymId={gymId}
+        useModal
+        modalColumns={2}
         fields={[
           { name: "code", label: "Code", required: true },
           { name: "discount_percent", label: "Discount %", type: "number" },
@@ -135,6 +143,8 @@ export default function MarketingPage() {
         table="loyalty_rewards"
         session={session}
         gymId={gymId}
+        useModal
+        modalColumns={2}
         fields={[
           { name: "member_id", label: "Member ID" },
           { name: "points", label: "Points", type: "number" },
@@ -157,6 +167,8 @@ export default function MarketingPage() {
         table="referrals"
         session={session}
         gymId={gymId}
+        useModal
+        modalColumns={2}
         fields={[
           { name: "referrer_member_id", label: "Referrer Member ID" },
           { name: "referee_name", label: "Referee Name" },

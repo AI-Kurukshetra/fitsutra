@@ -63,6 +63,8 @@ export default function CrmPage() {
         table="members"
         session={session}
         gymId={gymId}
+        useModal
+        modalColumns={3}
         fields={[
           { name: "member_code", label: "Member Code" },
           { name: "full_name", label: "Full Name", required: true },
@@ -90,6 +92,8 @@ export default function CrmPage() {
         table="membership_plans"
         session={session}
         gymId={gymId}
+        useModal
+        modalColumns={2}
         fields={[
           { name: "name", label: "Plan Name", required: true },
           { name: "price", label: "Price", type: "number" },
@@ -122,6 +126,8 @@ export default function CrmPage() {
         table="memberships"
         session={session}
         gymId={gymId}
+        useModal
+        modalColumns={2}
         fields={[
           { name: "member_id", label: "Member ID", required: true },
           { name: "plan_id", label: "Plan ID" },

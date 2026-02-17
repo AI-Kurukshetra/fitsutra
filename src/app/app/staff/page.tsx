@@ -48,6 +48,8 @@ export default function StaffPage() {
       <ContextNotice
         session={session}
         gymId={gymId}
+        useModal
+        modalColumns={2}
         loading={loading}
         error={error}
       />
@@ -60,6 +62,8 @@ export default function StaffPage() {
         table="staff"
         session={session}
         gymId={gymId}
+        useModal
+        modalColumns={2}
         fields={[
           { name: "full_name", label: "Full Name", required: true },
           { name: "role", label: "Role" },
@@ -82,6 +86,8 @@ export default function StaffPage() {
         table="staff_shifts"
         session={session}
         gymId={gymId}
+        useModal
+        modalColumns={2}
         fields={[
           { name: "staff_id", label: "Staff ID", required: true },
           { name: "start_at", label: "Start", type: "datetime-local" },
@@ -105,6 +111,8 @@ export default function StaffPage() {
         table="payroll_entries"
         session={session}
         gymId={gymId}
+        useModal
+        modalColumns={2}
         fields={[
           { name: "staff_id", label: "Staff ID", required: true },
           { name: "period_start", label: "Period Start", type: "date" },

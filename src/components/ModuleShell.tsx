@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 const navItems = [
   { href: "/app", label: "Dashboard" },
@@ -23,6 +24,8 @@ type ModuleShellProps = {
 };
 
 export default function ModuleShell({ title, subtitle, children }: ModuleShellProps) {
+  const pathname = usePathname();
+
   return (
     <div className="min-h-screen px-6 py-8">
       <header className="mx-auto w-full max-w-6xl space-y-6">
@@ -48,7 +51,11 @@ export default function ModuleShell({ title, subtitle, children }: ModuleShellPr
             <Link
               key={item.href}
               href={item.href}
-              className="rounded-full border border-slate-800/70 bg-slate-950/40 px-4 py-2 text-xs font-semibold text-slate-200"
+              className={
+                pathname === item.href
+                  ? "rounded-full border border-amber-400/60 bg-amber-400/10 px-4 py-2 text-xs font-semibold text-amber-200"
+                  : "rounded-full border border-slate-800/70 bg-slate-950/40 px-4 py-2 text-xs font-semibold text-slate-200"
+              }
             >
               {item.label}
             </Link>

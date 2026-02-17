@@ -42,6 +42,8 @@ type CrudModuleProps = {
   gymId: string | null;
   select?: string;
   order?: string;
+  useModal?: boolean;
+  modalColumns?: 2 | 3;
 };
 
 const defaultSelect = "id,created_at";
@@ -63,6 +65,8 @@ export default function CrudModule({
   gymId,
   select,
   order = "created_at.desc",
+  useModal = false,
+  modalColumns = 2,
 }: CrudModuleProps) {
   const [rows, setRows] = useState<Record<string, string | number | null>[]>(
     []
@@ -71,6 +75,8 @@ export default function CrudModule({
   const [error, setError] = useState<string | null>(null);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [form, setForm] = useState<Record<string, string>>({});
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalMode, setModalMode] = useState<"create" | "edit">("create");
   const [search, setSearch] = useState("");
   const [filterField, setFilterField] = useState<string>("");
   const [filterValue, setFilterValue] = useState<string>("");
@@ -158,26 +164,48 @@ export default function CrudModule({
       } else {
         await supabaseInsert(table, session.access_token, [payload]);
       }
-      setEditingId(null);
-      const reset: Record<string, string> = {};
-      fields.forEach((field) => {
-        reset[field.name] = "";
-      });
-      setForm(reset);
+      handleReset();
+      if (useModal) {
+        setIsModalOpen(false);
+      }
       loadRows();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Save failed");
     }
   }
 
+  function handleReset() {
+    setEditingId(null);
+    const reset: Record<string, string> = {};
+    fields.forEach((field) => {
+      reset[field.name] = "";
+    });
+    setForm(reset);
+  }
+
+  function handleOpenCreate() {
+    handleReset();
+    setModalMode("create");
+    setIsModalOpen(true);
+  }
+
   function startEdit(row: Record<string, string | number | null>) {
     setEditingId(row.id as string);
+    setModalMode("edit");
     const updated: Record<string, string> = {};
     fields.forEach((field) => {
       const value = row[field.name];
       updated[field.name] = value == null ? "" : String(value);
     });
     setForm(updated);
+    if (useModal) {
+      setIsModalOpen(true);
+    }
+  }
+
+  function closeModal() {
+    setIsModalOpen(false);
+    handleReset();
   }
 
   async function handleDelete(id: string) {
@@ -200,12 +228,23 @@ export default function CrudModule({
             <p className="mt-2 text-sm text-slate-300">{description}</p>
           )}
         </div>
-        <button
-          onClick={loadRows}
-          className="rounded-full border border-slate-700/60 px-4 py-2 text-xs font-semibold text-slate-200"
-        >
-          Refresh
-        </button>
+        <div className="flex flex-wrap gap-2">
+          {useModal && (
+            <button
+              onClick={handleOpenCreate}
+              disabled={!session?.access_token || !gymId}
+              className="rounded-full bg-amber-400 px-4 py-2 text-xs font-semibold text-slate-900 shadow-lg shadow-amber-500/30 disabled:cursor-not-allowed disabled:opacity-60"
+            >
+              Add
+            </button>
+          )}
+          <button
+            onClick={loadRows}
+            className="rounded-full border border-slate-700/60 px-4 py-2 text-xs font-semibold text-slate-200"
+          >
+            Refresh
+          </button>
+        </div>
       </div>
 
       <div className="mt-4 flex flex-wrap gap-3">
@@ -250,88 +289,179 @@ export default function CrudModule({
         )}
       </div>
 
-      <form onSubmit={handleSubmit} className="mt-6 grid gap-4">
-        <div className="grid gap-3 md:grid-cols-2">
-          {fields.map((field) => (
-            <div key={field.name}>
-              <label className="text-xs uppercase tracking-[0.3em] text-slate-400">
-                {field.label}
-              </label>
-              {field.type === "textarea" ? (
-                <textarea
-                  value={form[field.name] ?? ""}
-                  onChange={(event) =>
-                    setForm((prev) => ({
-                      ...prev,
-                      [field.name]: event.target.value,
-                    }))
-                  }
-                  className="mt-2 w-full rounded-2xl border border-slate-700/60 bg-slate-950/60 px-4 py-3 text-sm text-slate-100 outline-none focus:border-amber-400/70"
-                  required={field.required}
-                />
-              ) : field.type === "select" ? (
-                <select
-                  value={form[field.name] ?? ""}
-                  onChange={(event) =>
-                    setForm((prev) => ({
-                      ...prev,
-                      [field.name]: event.target.value,
-                    }))
-                  }
-                  className="mt-2 w-full rounded-2xl border border-slate-700/60 bg-slate-950/60 px-4 py-3 text-sm text-slate-100 outline-none focus:border-amber-400/70"
-                  required={field.required}
-                >
-                  <option value="">Select</option>
-                  {field.options?.map((option) => (
-                    <option key={option.value} value={option.value}>
-                      {option.label}
-                    </option>
-                  ))}
-                </select>
-              ) : (
-                <input
-                  type={field.type ?? "text"}
-                  value={form[field.name] ?? ""}
-                  onChange={(event) =>
-                    setForm((prev) => ({
-                      ...prev,
-                      [field.name]: event.target.value,
-                    }))
-                  }
-                  placeholder={field.placeholder}
-                  className="mt-2 w-full rounded-2xl border border-slate-700/60 bg-slate-950/60 px-4 py-3 text-sm text-slate-100 outline-none focus:border-amber-400/70"
-                  required={field.required}
-                />
-              )}
-            </div>
-          ))}
-        </div>
-        <div className="flex flex-wrap gap-3">
-          <button
-            type="submit"
-            disabled={!session?.access_token || !gymId}
-            className="rounded-full bg-amber-400 px-6 py-3 text-xs font-semibold text-slate-900 shadow-lg shadow-amber-500/30 disabled:cursor-not-allowed disabled:opacity-60"
-          >
-            {editingId ? "Update" : "Create"}
-          </button>
-          {editingId && (
+      {!useModal && (
+        <form onSubmit={handleSubmit} className="mt-6 grid gap-4">
+          <div className="grid gap-3 md:grid-cols-2">
+            {fields.map((field) => (
+              <div key={field.name}>
+                <label className="text-xs uppercase tracking-[0.3em] text-slate-400">
+                  {field.label}
+                </label>
+                {field.type === "textarea" ? (
+                  <textarea
+                    value={form[field.name] ?? ""}
+                    onChange={(event) =>
+                      setForm((prev) => ({
+                        ...prev,
+                        [field.name]: event.target.value,
+                      }))
+                    }
+                    className="mt-2 w-full rounded-2xl border border-slate-700/60 bg-slate-950/60 px-4 py-3 text-sm text-slate-100 outline-none focus:border-amber-400/70"
+                    required={field.required}
+                  />
+                ) : field.type === "select" ? (
+                  <select
+                    value={form[field.name] ?? ""}
+                    onChange={(event) =>
+                      setForm((prev) => ({
+                        ...prev,
+                        [field.name]: event.target.value,
+                      }))
+                    }
+                    className="mt-2 w-full rounded-2xl border border-slate-700/60 bg-slate-950/60 px-4 py-3 text-sm text-slate-100 outline-none focus:border-amber-400/70"
+                    required={field.required}
+                  >
+                    <option value="">Select</option>
+                    {field.options?.map((option) => (
+                      <option key={option.value} value={option.value}>
+                        {option.label}
+                      </option>
+                    ))}
+                  </select>
+                ) : (
+                  <input
+                    type={field.type ?? "text"}
+                    value={form[field.name] ?? ""}
+                    onChange={(event) =>
+                      setForm((prev) => ({
+                        ...prev,
+                        [field.name]: event.target.value,
+                      }))
+                    }
+                    placeholder={field.placeholder}
+                    className="mt-2 w-full rounded-2xl border border-slate-700/60 bg-slate-950/60 px-4 py-3 text-sm text-slate-100 outline-none focus:border-amber-400/70"
+                    required={field.required}
+                  />
+                )}
+              </div>
+            ))}
+          </div>
+          <div className="flex flex-wrap gap-3">
             <button
-              type="button"
-              onClick={() => {
-                setEditingId(null);
-                const reset: Record<string, string> = {};
-                fields.forEach((field) => {
-                  reset[field.name] = "";
-                });
-                setForm(reset);
-              }}
-              className="rounded-full border border-slate-700/60 px-6 py-3 text-xs font-semibold text-slate-200"
+              type="submit"
+              disabled={!session?.access_token || !gymId}
+              className="rounded-full bg-amber-400 px-6 py-3 text-xs font-semibold text-slate-900 shadow-lg shadow-amber-500/30 disabled:cursor-not-allowed disabled:opacity-60"
             >
-              Cancel
+              {editingId ? "Update" : "Create"}
             </button>
-          )}
+            {editingId && (
+              <button
+                type="button"
+                onClick={handleReset}
+                className="rounded-full border border-slate-700/60 px-6 py-3 text-xs font-semibold text-slate-200"
+              >
+                Cancel
+              </button>
+            )}
+          </div>
+        </form>
+      )}
+
+      {useModal && isModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/70 px-4 py-6">
+          <div className="glass max-h-[80vh] w-full max-w-[1100px] overflow-hidden rounded-3xl p-5">
+            <div className="flex flex-wrap items-center justify-between gap-4">
+              <h3 className="text-xl text-slate-100">
+                {modalMode === "edit" ? "Edit" : "Add"} {title}
+              </h3>
+              <button
+                onClick={closeModal}
+                className="rounded-full border border-slate-700/60 px-4 py-2 text-xs text-slate-200"
+              >
+                Close
+              </button>
+            </div>
+            <form onSubmit={handleSubmit} className="mt-4 grid gap-3">
+              <div
+                className={`grid gap-3 ${
+                  modalColumns === 3 ? "md:grid-cols-2 lg:grid-cols-3" : "md:grid-cols-2"
+                }`}
+              >
+                {fields.map((field) => (
+                  <div key={field.name}>
+                    <label className="text-[10px] uppercase tracking-[0.3em] text-slate-400">
+                      {field.label}
+                    </label>
+                    {field.type === "textarea" ? (
+                      <textarea
+                        rows={3}
+                        value={form[field.name] ?? ""}
+                        onChange={(event) =>
+                          setForm((prev) => ({
+                            ...prev,
+                            [field.name]: event.target.value,
+                          }))
+                        }
+                        className="mt-2 w-full rounded-2xl border border-slate-700/60 bg-slate-950/60 px-3 py-2 text-sm text-slate-100 outline-none focus:border-amber-400/70"
+                        required={field.required}
+                      />
+                    ) : field.type === "select" ? (
+                      <select
+                        value={form[field.name] ?? ""}
+                        onChange={(event) =>
+                          setForm((prev) => ({
+                            ...prev,
+                            [field.name]: event.target.value,
+                          }))
+                        }
+                        className="mt-2 w-full rounded-2xl border border-slate-700/60 bg-slate-950/60 px-4 py-3 text-sm text-slate-100 outline-none focus:border-amber-400/70"
+                        required={field.required}
+                      >
+                        <option value="">Select</option>
+                        {field.options?.map((option) => (
+                          <option key={option.value} value={option.value}>
+                            {option.label}
+                          </option>
+                        ))}
+                      </select>
+                    ) : (
+                      <input
+                        type={field.type ?? "text"}
+                        value={form[field.name] ?? ""}
+                        onChange={(event) =>
+                          setForm((prev) => ({
+                            ...prev,
+                            [field.name]: event.target.value,
+                          }))
+                        }
+                        placeholder={field.placeholder}
+                        className="mt-2 w-full rounded-2xl border border-slate-700/60 bg-slate-950/60 px-3 py-2 text-sm text-slate-100 outline-none focus:border-amber-400/70"
+                        required={field.required}
+                      />
+                    )}
+                  </div>
+                ))}
+              </div>
+              <div className="flex flex-wrap gap-3 pt-1">
+                <button
+                  type="submit"
+                  disabled={!session?.access_token || !gymId}
+                  className="rounded-full bg-amber-400 px-5 py-2 text-xs font-semibold text-slate-900 shadow-lg shadow-amber-500/30 disabled:cursor-not-allowed disabled:opacity-60"
+                >
+                  {modalMode === "edit" ? "Update" : "Create"}
+                </button>
+                <button
+                  type="button"
+                  onClick={closeModal}
+                  className="rounded-full border border-slate-700/60 px-5 py-2 text-xs font-semibold text-slate-200"
+                >
+                  Cancel
+                </button>
+              </div>
+            </form>
+          </div>
         </div>
-      </form>
+      )}
 
       {error && (
         <div className="mt-4 rounded-2xl border border-red-400/40 bg-red-500/10 px-4 py-3 text-sm text-red-200">

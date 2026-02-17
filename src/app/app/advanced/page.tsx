@@ -45,6 +45,8 @@ export default function AdvancedPage() {
       <ContextNotice
         session={session}
         gymId={gymId}
+        useModal
+        modalColumns={2}
         loading={loading}
         error={error}
       />
@@ -57,6 +59,8 @@ export default function AdvancedPage() {
         table="integrations"
         session={session}
         gymId={gymId}
+        useModal
+        modalColumns={2}
         fields={[
           { name: "provider", label: "Provider", required: true },
           {
@@ -78,6 +82,8 @@ export default function AdvancedPage() {
         table="forms"
         session={session}
         gymId={gymId}
+        useModal
+        modalColumns={2}
         fields={[
           { name: "title", label: "Title", required: true },
           { name: "form_type", label: "Form Type" },
@@ -99,6 +105,8 @@ export default function AdvancedPage() {
         table="waivers"
         session={session}
         gymId={gymId}
+        useModal
+        modalColumns={2}
         fields={[
           { name: "title", label: "Title", required: true },
           {
@@ -119,6 +127,8 @@ export default function AdvancedPage() {
         table="waiver_signatures"
         session={session}
         gymId={gymId}
+        useModal
+        modalColumns={2}
         fields={[
           { name: "waiver_id", label: "Waiver ID", required: true },
           { name: "member_id", label: "Member ID" },
@@ -132,6 +142,8 @@ export default function AdvancedPage() {
         table="locations"
         session={session}
         gymId={gymId}
+        useModal
+        modalColumns={2}
         fields={[
           { name: "name", label: "Location Name", required: true },
           { name: "address", label: "Address" },
