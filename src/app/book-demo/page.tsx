@@ -42,12 +42,12 @@ export default function BookDemoPage() {
     <div className="min-h-screen px-6 py-16">
       <div className="mx-auto w-full max-w-2xl space-y-8">
         <Link href="/" className="text-sm text-slate-400">
-          ← Back to FitSutra
+          ← Back to FitSutra Again
         </Link>
         <div className="glass rounded-3xl p-8">
           <div className="space-y-2">
             <p className="text-xs uppercase tracking-[0.3em] text-amber-300">
-              Schedule a call Today
+              Schedule a call Today and get call back from us
             </p>
             <h1 className="text-4xl text-slate-100">
               See FitSutra in action.
